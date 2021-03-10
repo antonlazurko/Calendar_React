@@ -3,7 +3,8 @@ import { Form, Button } from 'react-bootstrap';
 import { useState } from 'react';
 
 import { participants } from '../data/calendar-data';
-export default function Selector({ onSubmit }) {
+
+export default function Selector({ onSubmit, multiple }) {
   const [name, setName] = useState('');
   const changeSelect = value => {
     setName(value);
@@ -30,6 +31,7 @@ export default function Selector({ onSubmit }) {
         <Form.Label>Select participant</Form.Label>
         <Form.Control
           as="select"
+          multiple={multiple}
           custom
           onChange={e => changeSelect(e.target.value)}
         >
@@ -46,5 +48,5 @@ export default function Selector({ onSubmit }) {
   );
 }
 Selector.propTypes = {
-  children: PropTypes.node,
+  onSubmit: PropTypes.func,
 };
