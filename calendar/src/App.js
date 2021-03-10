@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 // import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -20,11 +20,6 @@ function App() {
       setAuthStatus(AUTHORISED_USER);
     }
   };
-
-  // useEffect(() => {
-  //   console.log(authStatus);
-  // }, [authStatus]);
-
   return (
     <Container>
       {authStatus === UNAUTHORISED && <AuthView onSubmit={handleAuthSubmit} />}
