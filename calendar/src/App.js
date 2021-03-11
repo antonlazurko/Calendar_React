@@ -1,5 +1,7 @@
 import { useState } from 'react';
-// import './App.css';
+import { ToastContainer } from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Container from './components/container';
@@ -25,6 +27,7 @@ function App() {
       {authStatus === UNAUTHORISED && <AuthView onSubmit={handleAuthSubmit} />}
       {authStatus === AUTHORISED_USER && <MainView isAdmin={false} />}
       {authStatus === AUTHORISED_ADMIN && <MainView isAdmin={true} />}
+      <ToastContainer autoClose={1800} />
     </Container>
   );
 }

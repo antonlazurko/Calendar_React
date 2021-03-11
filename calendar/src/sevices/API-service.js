@@ -14,17 +14,20 @@ class EventAPI {
     }
     return instance;
   }
-  //   @ErrorDecorator
+  // @ErrorDecorator
   async getEvent() {
-    const { data } = await axios.get(`${URL}${SYSTEM}/${ENTITY}`);
-    return data;
+    const { data, status } = await axios.get(`${URL}${SYSTEM}/${ENTITY}`);
+    return { data, status };
   }
-  //   @ErrorDecorator
+  // @ErrorDecorator
   async addEvent(body) {
-    const { status } = await axios.post(`${URL}${SYSTEM}/${ENTITY}`, body);
-    return status;
+    const { data, status } = await axios.post(
+      `${URL}${SYSTEM}/${ENTITY}`,
+      body,
+    );
+    return { data, status };
   }
-  //   @ErrorDecorator
+  // @ErrorDecorator
   async deleteEvent(id) {
     const { status } = await axios.delete(`${URL}${SYSTEM}/${ENTITY}/${id}`);
     return status;

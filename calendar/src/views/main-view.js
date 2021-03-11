@@ -2,25 +2,108 @@ import PropTypes from 'prop-types';
 import { Button, Table } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import JSON5 from 'json5';
+import { toast } from 'react-toastify';
 
 import Selector from '../components/selector';
+import CreateEventView from './creat-event-view';
 import { participants, daysArray, timeArray } from '../data/calendar-data';
 import { eventsSingleton } from '../sevices/API-service';
+import styles from './MainView.module.css';
 
 export default function MainView({ isAdmin }) {
   const [meetings, setMeetings] = useState([]);
   const [meetingsByParticipant, setMeetingsByParticipant] = useState([]);
   const [selectedParticipant, setSelectedParticipant] = useState('');
+  const [modalShow, setModalShow] = useState(false);
 
+  const handleModalShow = () => setModalShow(true);
+  const handleModalClose = () => setModalShow(false);
+  const validateForm = async (participantName, eventName, day, time) => {
+    if (eventName === '') {
+      toast.error('Please type event name!', {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      return false;
+    }
+    if (day === '') {
+      toast.error('Please choose day!', {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      return false;
+    }
+    if (time === '') {
+      toast.error('Please choose time!', {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      return false;
+    }
+    if (participantName.length === 0) {
+      toast.error('Please choose participant!', {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      return false;
+    }
+    const meetings = [];
+
+    // using singletone pattern
+    await eventsSingleton.getEvent().then(res => {
+      res.data?.map(event =>
+        meetings.push({ id: event.id, data: JSON5.parse(event.data) }),
+      );
+    });
+
+    const isAvailableTime = meetings.filter(
+      meeting =>
+        meeting.data.info.day === day && meeting.data.info.time === time,
+    );
+    if (isAvailableTime.length) {
+      toast.error('Please choose other time or date!', {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      return false;
+    }
+    return true;
+  };
+  const handleSubmit = async (participantName, eventName, day, time) => {
+    if (!(await validateForm(participantName, eventName, day, time))) {
+      return;
+    }
+    const meeting = {
+      title: `'${eventName}'`,
+      participants: [participantName],
+      info: {
+        day,
+        time,
+      },
+    };
+
+    const stringifyMeeting = JSON.stringify(meeting).replace(/"/g, '');
+    await eventsSingleton
+      .addEvent(
+        `{
+    "data":"${stringifyMeeting}"
+  }`,
+      )
+      .then(({ data, status }) => {
+        if (status === 200) {
+          toast.success('Event succesfully added!', {
+            position: toast.POSITION.TOP_CENTER,
+          });
+          const parsedMeeting = {
+            id: data.id,
+            data: JSON5.parse(data.data),
+          };
+          setMeetings(prevMeetings => [...prevMeetings, parsedMeeting]);
+        }
+      });
+    setModalShow(false);
+  };
   const getParticipant = value => {
     if (!value) {
       setSelectedParticipant('');
       return;
     }
-    const participant = participants.find(
-      participant => participant.user.name === value,
-    );
-    setSelectedParticipant(participant.user.id);
+    setSelectedParticipant(Number(value));
   };
   const deleteEvent = async event => {
     const deleteEl = event.target;
@@ -33,20 +116,34 @@ export default function MainView({ isAdmin }) {
 
         await eventsSingleton.deleteEvent(meetingId).then(status => {
           if (status === 204) {
+            toast.success('Event succesfully deleted!', {
+              position: toast.POSITION.TOP_CENTER,
+            });
             deleteEl.parentNode.innerHTML = '';
           }
         });
       }
     }
   };
+
   useEffect(() => {
     async function fetchData() {
-      const data = await eventsSingleton.getEvent();
-      const parsedMeetings = data.map(event => ({
-        id: event.id,
-        data: JSON5.parse(event.data),
-      }));
-      setMeetings(parsedMeetings);
+      const { data, status } = await eventsSingleton.getEvent();
+      if (data) {
+        const parsedMeetings = data?.map(event => ({
+          id: event.id,
+          data: JSON5.parse(event.data),
+        }));
+        setMeetings(parsedMeetings);
+        toast.success(`Events succesfully get with status: ${status}!`, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        return;
+      }
+      toast.success('There are no events in your calendar yet!', {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      setMeetings([]);
     }
     fetchData();
   }, []);
@@ -61,22 +158,23 @@ export default function MainView({ isAdmin }) {
       : setMeetingsByParticipant(meetings);
   }, [selectedParticipant, meetings]);
 
-  const handleCreateEventBtn = async () => {};
   return (
     <>
-      <Selector
-        selectArray={participants}
-        onChange={getParticipant}
-        multiple={false}
-        selectorName="participant"
-      />
-      <Button
-        variant="secondary"
-        disabled={!isAdmin}
-        onClick={event => handleCreateEventBtn(event)}
-      >
-        Create event
-      </Button>
+      <div className={styles.header}>
+        <Selector
+          selectArray={participants}
+          onChange={getParticipant}
+          multiple={false}
+          selectorName="participant"
+        />
+        <Button
+          variant="secondary"
+          disabled={!isAdmin}
+          onClick={() => handleModalShow()}
+        >
+          Create event
+        </Button>
+      </div>
       <Table striped bordered hover size="sm">
         <thead>
           <tr>
@@ -88,15 +186,16 @@ export default function MainView({ isAdmin }) {
         </thead>
         <tbody>
           {timeArray.map((timeObj, index) => {
-            const availableMeetings = meetingsByParticipant.filter(
+            const availableMeetings = meetingsByParticipant?.filter(
               meeting => meeting.data.info.time === index,
             );
             const days = new Array(5).fill('');
-            availableMeetings.map(meeting => {
+            availableMeetings?.map(meeting => {
               const { day } = meeting.data.info;
               days[day] = {
                 name: `${meeting.data.title}`,
                 id: meeting.id,
+                className: 'succes',
               };
               return true;
             });
@@ -104,7 +203,7 @@ export default function MainView({ isAdmin }) {
               <tr key={timeObj.id}>
                 <td>{timeObj.name}</td>
                 {days.map((day, index) => (
-                  <td key={day.id || index}>
+                  <td key={day.id || index} className={styles.td}>
                     {day.name || ''}
                     {day.name && (
                       <Button
@@ -114,7 +213,7 @@ export default function MainView({ isAdmin }) {
                         disabled={!isAdmin}
                         onClick={e => deleteEvent(e)}
                       >
-                        X
+                        x
                       </Button>
                     )}
                   </td>
@@ -124,6 +223,14 @@ export default function MainView({ isAdmin }) {
           })}
         </tbody>
       </Table>
+      {modalShow && (
+        <CreateEventView
+          modalShow={modalShow}
+          handleSubmit={handleSubmit}
+          handleClose={handleModalClose}
+          controlOptions={{ participants, daysArray, timeArray }}
+        />
+      )}
     </>
   );
 }
