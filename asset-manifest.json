@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.css": "/static/css/main.7b441520.chunk.css",
-    "main.js": "/static/js/main.4f0095cd.chunk.js",
-    "main.js.map": "/static/js/main.4f0095cd.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.69cfbf3f.js",
-    "runtime-main.js.map": "/static/js/runtime-main.69cfbf3f.js.map",
-    "static/css/2.94b695ff.chunk.css": "/static/css/2.94b695ff.chunk.css",
-    "static/js/2.fd4fb1cb.chunk.js": "/static/js/2.fd4fb1cb.chunk.js",
-    "static/js/2.fd4fb1cb.chunk.js.map": "/static/js/2.fd4fb1cb.chunk.js.map",
-    "index.html": "/index.html",
-    "static/css/2.94b695ff.chunk.css.map": "/static/css/2.94b695ff.chunk.css.map",
-    "static/css/main.7b441520.chunk.css.map": "/static/css/main.7b441520.chunk.css.map",
-    "static/js/2.fd4fb1cb.chunk.js.LICENSE.txt": "/static/js/2.fd4fb1cb.chunk.js.LICENSE.txt"
+    "main.css": "/Calendar_React/static/css/main.7b441520.chunk.css",
+    "main.js": "/Calendar_React/static/js/main.4f0095cd.chunk.js",
+    "main.js.map": "/Calendar_React/static/js/main.4f0095cd.chunk.js.map",
+    "runtime-main.js": "/Calendar_React/static/js/runtime-main.663f5d97.js",
+    "runtime-main.js.map": "/Calendar_React/static/js/runtime-main.663f5d97.js.map",
+    "static/css/2.94b695ff.chunk.css": "/Calendar_React/static/css/2.94b695ff.chunk.css",
+    "static/js/2.fd4fb1cb.chunk.js": "/Calendar_React/static/js/2.fd4fb1cb.chunk.js",
+    "static/js/2.fd4fb1cb.chunk.js.map": "/Calendar_React/static/js/2.fd4fb1cb.chunk.js.map",
+    "index.html": "/Calendar_React/index.html",
+    "static/css/2.94b695ff.chunk.css.map": "/Calendar_React/static/css/2.94b695ff.chunk.css.map",
+    "static/css/main.7b441520.chunk.css.map": "/Calendar_React/static/css/main.7b441520.chunk.css.map",
+    "static/js/2.fd4fb1cb.chunk.js.LICENSE.txt": "/Calendar_React/static/js/2.fd4fb1cb.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.69cfbf3f.js",
+    "static/js/runtime-main.663f5d97.js",
     "static/css/2.94b695ff.chunk.css",
     "static/js/2.fd4fb1cb.chunk.js",
     "static/css/main.7b441520.chunk.css",
