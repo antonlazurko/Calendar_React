@@ -31,7 +31,6 @@ export default function MainView({ isAdmin }) {
       if (result) {
         const meetingId = event.target.getAttribute('data-id');
 
-        // using singletone pattern
         await eventsSingleton.deleteEvent(meetingId).then(status => {
           if (status === 204) {
             deleteEl.parentNode.innerHTML = '';

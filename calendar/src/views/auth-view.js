@@ -8,8 +8,12 @@ import Selector from '../components/selector';
 export default function AuthView({ onSubmit }) {
   const [participantId, setParticipantId] = useState('');
   const handleSelectChange = value => {
-    const participant = participants.find(({ user }) => user.name === value);
-    setParticipantId(participant.user.id);
+    if (value) {
+      const participant = participants.find(({ user }) => user.name === value);
+      setParticipantId(participant.user.id);
+      return;
+    }
+    setParticipantId(value);
   };
 
   const handleSubmit = () => {
