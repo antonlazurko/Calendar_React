@@ -18,10 +18,13 @@ export default function MainView({ user }) {
   const [selectedParticipant, setSelectedParticipant] = useState('');
   const [modalShow, setModalShow] = useState(false);
 
+  // open modal fn
   const handleModalShow = () => setModalShow(true);
 
+  // close modal fn
   const handleModalClose = () => setModalShow(false);
 
+  // sync validation form
   const validateForm = (participantName, eventName, day, time) => {
     if (eventName === '') {
       toast.error('Please type event name!', {
@@ -61,6 +64,7 @@ export default function MainView({ user }) {
     return true;
   };
 
+  // submit form
   const handleSubmit = async (participantName, eventName, day, time) => {
     if (!(await validateForm(participantName, eventName, day, time))) {
       return;
@@ -96,6 +100,7 @@ export default function MainView({ user }) {
     setModalShow(false);
   };
 
+  // select participant fn
   const getParticipant = value => {
     if (!value) {
       setSelectedParticipant('');
@@ -104,6 +109,7 @@ export default function MainView({ user }) {
     setSelectedParticipant(Number(value));
   };
 
+  // deleting event on delete button click
   const deleteEvent = async event => {
     const deleteEl = event.target;
     if (deleteEl.tagName === 'BUTTON') {
@@ -125,6 +131,7 @@ export default function MainView({ user }) {
     }
   };
 
+  // fetching meeting at first render
   useEffect(() => {
     async function fetchData() {
       const { data, status } = await eventsSingleton.getEvent();
@@ -147,6 +154,7 @@ export default function MainView({ user }) {
     fetchData();
   }, []);
 
+  // filter events by selected participant
   useEffect(() => {
     selectedParticipant
       ? setMeetingsByParticipant(
@@ -159,10 +167,6 @@ export default function MainView({ user }) {
 
   return (
     <>
-      <h6>
-        {`Hallo ${user.user.name} you `}
-        {user.isAdmin ? 'have admin rights' : 'have only user rights'}
-      </h6>
       <div className={styles.header}>
         <Selector
           selectArray={participants}

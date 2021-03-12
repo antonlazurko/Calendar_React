@@ -1,14 +1,17 @@
 import PropTypes from 'prop-types';
 import { Button } from 'react-bootstrap';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { participants } from '../../data/calendar-data';
-
+import { userContext } from '../../userContext';
 import Selector from '../../components/selector/selector';
 
-export default function AuthView({ onSubmit }) {
+export default function AuthView() {
   const [participantId, setParticipantId] = useState(0);
+  const history = useHistory();
+  const { getUser } = useContext(userContext);
 
   const handleSubmit = () => {
     if (participantId === 0) {
@@ -20,7 +23,12 @@ export default function AuthView({ onSubmit }) {
     const member = participants.find(({ user }) => {
       return user.id === participantId;
     });
-    onSubmit(member);
+
+    // geting curren authorized user
+    getUser(member);
+
+    //redirecting to Main View
+    history.push('/');
   };
 
   return (
