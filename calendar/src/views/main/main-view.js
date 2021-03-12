@@ -4,21 +4,25 @@ import { useEffect, useState } from 'react';
 import JSON5 from 'json5';
 import { toast } from 'react-toastify';
 
-import Selector from '../components/selector';
-import CreateEventView from './creat-event-view';
-import { participants, daysArray, timeArray } from '../data/calendar-data';
-import { eventsSingleton } from '../sevices/API-service';
+import Selector from '../../components/selector/selector';
+import CreateEventView from '../create/creat-event-view';
+import { participants, daysArray, timeArray } from '../../data/calendar-data';
+
+import { eventsSingleton } from '../../sevices/API-service';
+
 import styles from './MainView.module.css';
 
-export default function MainView({ isAdmin }) {
+export default function MainView({ user }) {
   const [meetings, setMeetings] = useState([]);
   const [meetingsByParticipant, setMeetingsByParticipant] = useState([]);
   const [selectedParticipant, setSelectedParticipant] = useState('');
   const [modalShow, setModalShow] = useState(false);
 
   const handleModalShow = () => setModalShow(true);
+
   const handleModalClose = () => setModalShow(false);
-  const validateForm = async (participantName, eventName, day, time) => {
+
+  const validateForm = (participantName, eventName, day, time) => {
     if (eventName === '') {
       toast.error('Please type event name!', {
         position: toast.POSITION.TOP_CENTER,
@@ -43,14 +47,6 @@ export default function MainView({ isAdmin }) {
       });
       return false;
     }
-    const meetings = [];
-
-    // using singletone pattern
-    await eventsSingleton.getEvent().then(res => {
-      res.data?.map(event =>
-        meetings.push({ id: event.id, data: JSON5.parse(event.data) }),
-      );
-    });
 
     const isAvailableTime = meetings.filter(
       meeting =>
@@ -64,6 +60,7 @@ export default function MainView({ isAdmin }) {
     }
     return true;
   };
+
   const handleSubmit = async (participantName, eventName, day, time) => {
     if (!(await validateForm(participantName, eventName, day, time))) {
       return;
@@ -98,6 +95,7 @@ export default function MainView({ isAdmin }) {
       });
     setModalShow(false);
   };
+
   const getParticipant = value => {
     if (!value) {
       setSelectedParticipant('');
@@ -105,6 +103,7 @@ export default function MainView({ isAdmin }) {
     }
     setSelectedParticipant(Number(value));
   };
+
   const deleteEvent = async event => {
     const deleteEl = event.target;
     if (deleteEl.tagName === 'BUTTON') {
@@ -160,6 +159,10 @@ export default function MainView({ isAdmin }) {
 
   return (
     <>
+      <h6>
+        {`Hallo ${user.user.name} you `}
+        {user.isAdmin ? 'have admin rights' : 'have only user rights'}
+      </h6>
       <div className={styles.header}>
         <Selector
           selectArray={participants}
@@ -168,8 +171,8 @@ export default function MainView({ isAdmin }) {
           selectorName="participant"
         />
         <Button
-          variant="secondary"
-          disabled={!isAdmin}
+          variant="primary"
+          disabled={!user.isAdmin}
           onClick={() => handleModalShow()}
         >
           Create event
@@ -209,9 +212,10 @@ export default function MainView({ isAdmin }) {
                       <Button
                         key={day.id}
                         data-id={day.id}
-                        variant="secondary"
-                        disabled={!isAdmin}
+                        variant="info"
+                        disabled={!user.isAdmin}
                         onClick={e => deleteEvent(e)}
+                        className={styles.deleteBtn}
                       >
                         x
                       </Button>
@@ -235,5 +239,5 @@ export default function MainView({ isAdmin }) {
   );
 }
 MainView.propTypes = {
-  isAdmin: PropTypes.bool.isRequired,
+  user: PropTypes.object,
 };

@@ -1,19 +1,15 @@
 import PropTypes from 'prop-types';
 import { Button } from 'react-bootstrap';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { participants } from '../data/calendar-data';
+import { participants } from '../../data/calendar-data';
 
-import Selector from '../components/selector';
+import Selector from '../../components/selector/selector';
+
 export default function AuthView({ onSubmit }) {
-  const [participantId, setParticipantId] = useState('');
-  const handleSelectChange = value => {
-    setParticipantId(Number(value));
-  };
-  useEffect(() => {
-    console.log(participantId);
-  }, [participantId]);
+  const [participantId, setParticipantId] = useState(0);
+
   const handleSubmit = () => {
     if (participantId === 0) {
       toast.error('Please autorise!', {
@@ -24,19 +20,15 @@ export default function AuthView({ onSubmit }) {
     const member = participants.find(({ user }) => {
       return user.id === participantId;
     });
-    if (member.isAdmin) {
-      onSubmit(true);
-      return;
-    } else {
-      onSubmit(false);
-    }
+    onSubmit(member);
   };
+
   return (
     <>
       <Selector
         selectArray={participants}
         selectorName="participant"
-        onChange={handleSelectChange}
+        onChange={value => setParticipantId(Number(value))}
         multiple={false}
       />
       <Button variant="primary" onClick={() => handleSubmit()}>

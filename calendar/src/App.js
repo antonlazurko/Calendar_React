@@ -1,34 +1,35 @@
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import Container from './components/container';
-import MainView from './views/main-view';
-import AuthView from './views/auth-view';
+import Container from './components/container/container';
 
-const UNAUTHORISED = 'unauthorised';
-const AUTHORISED_USER = 'autorised_user';
-const AUTHORISED_ADMIN = 'autorised_admin';
+const MainView = lazy(() =>
+  import('./views/main/main-view' /*webpackChunkName: "MainView" */),
+);
+const AuthView = lazy(() =>
+  import('./views/auth/auth-view' /*webpackChunkName: "AuthView" */),
+);
 
 function App() {
-  const [authStatus, setAuthStatus] = useState(UNAUTHORISED);
-  const handleAuthSubmit = value => {
-    if (value) {
-      setAuthStatus(AUTHORISED_ADMIN);
-      return;
-    } else {
-      setAuthStatus(AUTHORISED_USER);
-    }
-  };
+  const [authUser, setAuthUser] = useState();
   return (
-    <Container>
-      {authStatus === UNAUTHORISED && <AuthView onSubmit={handleAuthSubmit} />}
-      {authStatus === AUTHORISED_USER && <MainView isAdmin={false} />}
-      {authStatus === AUTHORISED_ADMIN && <MainView isAdmin={true} />}
-      <ToastContainer autoClose={1800} />
-    </Container>
+    <Suspense fallback={<div>Downloading...</div>}>
+      <Container>
+        {!authUser ? (
+          <AuthView
+            onSubmit={value => {
+              setAuthUser(value);
+            }}
+          />
+        ) : (
+          <MainView user={authUser} />
+        )}
+        <ToastContainer autoClose={1800} />
+      </Container>
+    </Suspense>
   );
 }
 

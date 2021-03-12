@@ -1,6 +1,5 @@
 import axios from 'axios';
-// import 'regenerator-runtime/runtime.js';
-// import ErrorDecorator from './API-error-Decorator.js';
+
 const SYSTEM = `anton_lazurko`;
 const ENTITY = `events`;
 const URL = 'http://158.101.166.74:8080/api/data/';
@@ -14,23 +13,38 @@ class EventAPI {
     }
     return instance;
   }
-  // @ErrorDecorator
+
   async getEvent() {
-    const { data, status } = await axios.get(`${URL}${SYSTEM}/${ENTITY}`);
-    return { data, status };
+    try {
+      const { data, status } = await axios.get(`${URL}${SYSTEM}/${ENTITY}`);
+      return { data, status };
+    } catch (error) {
+      console.log(error.message);
+      return error.message;
+    }
   }
-  // @ErrorDecorator
+
   async addEvent(body) {
-    const { data, status } = await axios.post(
-      `${URL}${SYSTEM}/${ENTITY}`,
-      body,
-    );
-    return { data, status };
+    try {
+      const { data, status } = await axios.post(
+        `${URL}${SYSTEM}/${ENTITY}`,
+        body,
+      );
+      return { data, status };
+    } catch (error) {
+      console.log(error.message);
+      return error.message;
+    }
   }
-  // @ErrorDecorator
+
   async deleteEvent(id) {
-    const { status } = await axios.delete(`${URL}${SYSTEM}/${ENTITY}/${id}`);
-    return status;
+    try {
+      const { status } = await axios.delete(`${URL}${SYSTEM}/${ENTITY}/${id}`);
+      return status;
+    } catch (error) {
+      console.log(error.message);
+      return error.message;
+    }
   }
 }
 export const eventsSingleton = new EventAPI();
