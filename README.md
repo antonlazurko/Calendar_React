@@ -4,9 +4,9 @@ Calendar - meeting schedule application for one meeting room.
 
 ## Description
 
-Calendar have three screens: "Authorisation" screen, “Calendar” screen and “Create event” modal-screen;
+Calendar have three screens: "Authorization" screen, “Calendar” screen and “Create event” modal-screen;
 
-### “Authorisation” screen
+### “Authorization” screen
 
 Screen where you can autorized your user. When you choose user and click button "Authorize" you will be automaticly rederct to "Calendar" screen.
 
