@@ -1,10 +1,14 @@
 # Calendar
 
-Calendar - meeting scheduler application for one meeting room.
+Calendar - meeting schedule application for one meeting room.
 
 ## Description
 
-Calendar have two screens: “Calendar” screen and “Create event” modal-screen;
+Calendar have three screens: "Authorisation" screen, “Calendar” screen and “Create event” modal-screen;
+
+### “Authorisation” screen
+
+Screen where you can autorized your user. When you choose user and click button "Authorize" you will be automaticly rederct to "Calendar" screen.
 
 ### “Calendar” screen
 
@@ -38,7 +42,7 @@ User can change number of people who can take part in the meetings. For this in
 folder "src" user should find "calendar data.js" file and add new participant's
 object with "id", "name" and "meetings" properties to "participants" array.
 
-### Saving user data on client-side
+### Saving user data on server
 
 All data that user input saves on API server. When user refresh aplcation page
 "Calendar" all data will request from server.
