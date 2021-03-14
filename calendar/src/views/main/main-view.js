@@ -71,7 +71,7 @@ export default function MainView({ user }) {
     }
     const meeting = {
       title: `'${eventName}'`,
-      participants: [participantName],
+      participants: participantName,
       info: {
         day,
         time,
