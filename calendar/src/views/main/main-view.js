@@ -4,21 +4,28 @@ import { useEffect, useState } from 'react';
 import JSON5 from 'json5';
 import { toast } from 'react-toastify';
 
-import Selector from '../components/selector';
-import CreateEventView from './creat-event-view';
-import { participants, daysArray, timeArray } from '../data/calendar-data';
-import { eventsSingleton } from '../sevices/API-service';
+import Selector from '../../components/selector/selector';
+import CreateEventView from '../create/creat-event-view';
+import { participants, daysArray, timeArray } from '../../data/calendar-data';
+
+import { eventsSingleton } from '../../sevices/API-service';
+
 import styles from './MainView.module.css';
 
-export default function MainView({ isAdmin }) {
+export default function MainView({ user }) {
   const [meetings, setMeetings] = useState([]);
   const [meetingsByParticipant, setMeetingsByParticipant] = useState([]);
   const [selectedParticipant, setSelectedParticipant] = useState('');
   const [modalShow, setModalShow] = useState(false);
 
+  // open modal fn
   const handleModalShow = () => setModalShow(true);
+
+  // close modal fn
   const handleModalClose = () => setModalShow(false);
-  const validateForm = async (participantName, eventName, day, time) => {
+
+  // sync validation form
+  const validateForm = (participantName, eventName, day, time) => {
     if (eventName === '') {
       toast.error('Please type event name!', {
         position: toast.POSITION.TOP_CENTER,
@@ -43,14 +50,6 @@ export default function MainView({ isAdmin }) {
       });
       return false;
     }
-    const meetings = [];
-
-    // using singletone pattern
-    await eventsSingleton.getEvent().then(res => {
-      res.data?.map(event =>
-        meetings.push({ id: event.id, data: JSON5.parse(event.data) }),
-      );
-    });
 
     const isAvailableTime = meetings.filter(
       meeting =>
@@ -64,13 +63,15 @@ export default function MainView({ isAdmin }) {
     }
     return true;
   };
+
+  // submit form
   const handleSubmit = async (participantName, eventName, day, time) => {
     if (!(await validateForm(participantName, eventName, day, time))) {
       return;
     }
     const meeting = {
       title: `'${eventName}'`,
-      participants: [participantName],
+      participants: participantName,
       info: {
         day,
         time,
@@ -98,6 +99,8 @@ export default function MainView({ isAdmin }) {
       });
     setModalShow(false);
   };
+
+  // select participant fn
   const getParticipant = value => {
     if (!value) {
       setSelectedParticipant('');
@@ -105,6 +108,8 @@ export default function MainView({ isAdmin }) {
     }
     setSelectedParticipant(Number(value));
   };
+
+  // deleting event on delete button click
   const deleteEvent = async event => {
     const deleteEl = event.target;
     if (deleteEl.tagName === 'BUTTON') {
@@ -126,6 +131,7 @@ export default function MainView({ isAdmin }) {
     }
   };
 
+  // fetching meeting at first render
   useEffect(() => {
     async function fetchData() {
       const { data, status } = await eventsSingleton.getEvent();
@@ -148,6 +154,7 @@ export default function MainView({ isAdmin }) {
     fetchData();
   }, []);
 
+  // filter events by selected participant
   useEffect(() => {
     selectedParticipant
       ? setMeetingsByParticipant(
@@ -168,8 +175,8 @@ export default function MainView({ isAdmin }) {
           selectorName="participant"
         />
         <Button
-          variant="secondary"
-          disabled={!isAdmin}
+          variant="primary"
+          disabled={!user.isAdmin}
           onClick={() => handleModalShow()}
         >
           Create event
@@ -209,9 +216,10 @@ export default function MainView({ isAdmin }) {
                       <Button
                         key={day.id}
                         data-id={day.id}
-                        variant="secondary"
-                        disabled={!isAdmin}
+                        variant="info"
+                        disabled={!user.isAdmin}
                         onClick={e => deleteEvent(e)}
+                        className={styles.deleteBtn}
                       >
                         x
                       </Button>
@@ -235,5 +243,5 @@ export default function MainView({ isAdmin }) {
   );
 }
 MainView.propTypes = {
-  isAdmin: PropTypes.bool.isRequired,
+  user: PropTypes.object,
 };

@@ -8,17 +8,34 @@ export default function Selector({
   selectArray,
   selectorName,
 }) {
+  const getSelectedMembers = target => {
+    if (target.multiple) {
+      const values = [];
+
+      const select = target.options;
+      for (let i = 0; i < select.length; i += 1) {
+        if (select[i].selected) {
+          values.push(Number(select[i].value));
+        }
+      }
+      onChange(values);
+      return;
+    }
+    onChange(Number(target.value));
+  };
+
   return (
     <>
       <Form id={selectorName}>
         <Form.Group controlId="exampleForm.SelectCustom">
           <Form.Label>Select {`${selectorName}`}</Form.Label>
           <Form.Control
+            className="selector"
             as="select"
+            multiple={multiple}
             custom
-            onChange={e => onChange(e.target.value)}
+            onChange={e => getSelectedMembers(e.target)}
           >
-            {!multiple && <option></option>}
             {selectArray?.map(item => (
               <option
                 key={item.user?.id || item.id}

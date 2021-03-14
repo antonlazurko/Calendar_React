@@ -1,19 +1,18 @@
 import PropTypes from 'prop-types';
 import { Button } from 'react-bootstrap';
-import { useState, useEffect } from 'react';
+import { useState, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { participants } from '../data/calendar-data';
+import { participants } from '../../data/calendar-data';
+import { userContext } from '../../userContext';
+import Selector from '../../components/selector/selector';
 
-import Selector from '../components/selector';
-export default function AuthView({ onSubmit }) {
-  const [participantId, setParticipantId] = useState('');
-  const handleSelectChange = value => {
-    setParticipantId(Number(value));
-  };
-  useEffect(() => {
-    console.log(participantId);
-  }, [participantId]);
+export default function AuthView() {
+  const [participantId, setParticipantId] = useState(0);
+  const history = useHistory();
+  const { getUser } = useContext(userContext);
+
   const handleSubmit = () => {
     if (participantId === 0) {
       toast.error('Please autorise!', {
@@ -24,19 +23,20 @@ export default function AuthView({ onSubmit }) {
     const member = participants.find(({ user }) => {
       return user.id === participantId;
     });
-    if (member.isAdmin) {
-      onSubmit(true);
-      return;
-    } else {
-      onSubmit(false);
-    }
+
+    // geting curren authorized user
+    getUser(member);
+
+    //redirecting to Main View
+    history.push('/');
   };
+
   return (
     <>
       <Selector
         selectArray={participants}
         selectorName="participant"
-        onChange={handleSelectChange}
+        onChange={value => setParticipantId(Number(value))}
         multiple={false}
       />
       <Button variant="primary" onClick={() => handleSubmit()}>

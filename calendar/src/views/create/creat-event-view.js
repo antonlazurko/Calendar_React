@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormControl, InputGroup, Button, Modal } from 'react-bootstrap';
 
-import Selector from '../components/selector';
+import Selector from '../../components/selector/selector';
 
 export default function CreateEventView({
   handleClose,
@@ -12,10 +12,12 @@ export default function CreateEventView({
 }) {
   const { participants, daysArray, timeArray } = controlOptions;
   const [eventName, setEventName] = useState('');
-  const [participantName, setParticipantName] = useState([]);
+  const [participantName, setParticipantName] = useState();
   const [day, setDay] = useState('');
   const [time, setTime] = useState('');
-
+  useEffect(() => {
+    console.log(participantName);
+  }, [participantName]);
   return (
     <>
       <Modal show={modalShow} onHide={handleClose} animation={false}>
@@ -38,7 +40,7 @@ export default function CreateEventView({
           </InputGroup>
           <Selector
             multiple={true}
-            onChange={value => setParticipantName(Number(value))}
+            onChange={value => setParticipantName(value)}
             selectArray={participants}
             selectorName="participant"
           />
