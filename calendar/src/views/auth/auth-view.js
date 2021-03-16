@@ -1,17 +1,18 @@
 import PropTypes from 'prop-types';
 import { Button } from 'react-bootstrap';
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 
 import { participants } from '../../data/calendar-data';
-import { userContext } from '../../userContext';
 import Selector from '../../components/selector/selector';
+import { authorizeAction } from '../../redux/actions/actions';
 
 export default function AuthView() {
   const [participantId, setParticipantId] = useState(0);
   const history = useHistory();
-  const { getUser } = useContext(userContext);
+  const dispatch = useDispatch();
 
   const handleSubmit = () => {
     if (participantId === 0) {
@@ -20,12 +21,12 @@ export default function AuthView() {
       });
       return;
     }
-    const member = participants.find(({ user }) => {
+    const participantObj = participants.find(({ user }) => {
       return user.id === participantId;
     });
 
-    // geting curren authorized user
-    getUser(member);
+    // setting current authorized user to state
+    dispatch(authorizeAction(participantObj));
 
     //redirecting to Main View
     history.push('/');

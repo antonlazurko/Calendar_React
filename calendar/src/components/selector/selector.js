@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import { Form } from 'react-bootstrap';
-import { propTypes } from 'react-bootstrap/esm/Image';
 
 export default function Selector({
   multiple,
@@ -51,8 +50,8 @@ export default function Selector({
   );
 }
 Selector.propTypes = {
-  multiple: propTypes.bool,
+  multiple: PropTypes.bool,
   onChange: PropTypes.func,
   selectArray: PropTypes.arrayOf(PropTypes.object),
-  selectorName: propTypes.string,
+  selectorName: PropTypes.string,
 };
