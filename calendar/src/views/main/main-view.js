@@ -1,18 +1,26 @@
 import PropTypes from 'prop-types';
 import { Button, Table } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+
 import JSON5 from 'json5';
 import { toast } from 'react-toastify';
-
 import Selector from '../../components/selector/selector';
 import CreateEventView from '../create/creat-event-view';
 import { participants, daysArray, timeArray } from '../../data/calendar-data';
 
 import { eventsSingleton } from '../../sevices/API-service';
-
+import { getEventsData } from '../../redux/selectors/selectors';
+import { addEventAction, deleteEventAction } from '../../redux/actions/actions';
 import styles from './MainView.module.css';
 
 export default function MainView({ user }) {
+  const { data } = useSelector(getEventsData);
+  const dispatch = useDispatch();
+  const parsedMeetings = data?.map(event => ({
+    id: event.id,
+    data: JSON5.parse(event.data),
+  }));
   const [meetings, setMeetings] = useState([]);
   const [meetingsByParticipant, setMeetingsByParticipant] = useState([]);
   const [selectedParticipant, setSelectedParticipant] = useState('');
@@ -118,15 +126,16 @@ export default function MainView({ user }) {
       );
       if (result) {
         const meetingId = event.target.getAttribute('data-id');
-
-        await eventsSingleton.deleteEvent(meetingId).then(status => {
-          if (status === 204) {
-            toast.success('Event succesfully deleted!', {
-              position: toast.POSITION.TOP_CENTER,
-            });
-            deleteEl.parentNode.innerHTML = '';
-          }
-        });
+        dispatch(deleteEventAction(meetingId));
+        deleteEl.parentNode.innerHTML = '';
+        // await eventsSingleton.deleteEvent(meetingId).then(status => {
+        //   if (status === 204) {
+        //     toast.success('Event succesfully deleted!', {
+        //       position: toast.POSITION.TOP_CENTER,
+        //     });
+        //     deleteEl.parentNode.innerHTML = '';
+        //   }
+        // });
       }
     }
   };
@@ -152,6 +161,7 @@ export default function MainView({ user }) {
       setMeetings([]);
     }
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // filter events by selected participant
