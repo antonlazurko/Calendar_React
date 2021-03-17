@@ -4,20 +4,15 @@ import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { toast } from 'react-toastify';
-import Selector from '../../components/selector/selector';
-import CreateEventView from '../create/creat-event-view';
+import { Selector } from '../../components/';
+import { CreateEventView } from '../create/';
 import { participants, daysArray, timeArray } from '../../data/calendar-data';
 
-import { getEventsData } from '../../redux/selectors/selectors';
-import {
-  deleteEventOperation,
-  addEventOperation,
-  getEventOperation,
-} from '../../redux/event-operations/event-operations';
+import { selectors, eventOperations } from '../../redux/';
 import styles from './MainView.module.css';
 
 export default function MainView({ user }) {
-  const { events } = useSelector(getEventsData);
+  const { events } = useSelector(selectors.getEventsData);
   const dispatch = useDispatch();
 
   const [eventsByParticipant, setEventsByParticipant] = useState([]);
@@ -25,7 +20,7 @@ export default function MainView({ user }) {
   const [modalShow, setModalShow] = useState(false);
 
   // setting events user to state
-  useEffect(() => dispatch(getEventOperation()), [dispatch]);
+  useEffect(() => dispatch(eventOperations.getEventOperation()), [dispatch]);
 
   // open modal fn
   const handleModalShow = () => setModalShow(true);
@@ -85,7 +80,7 @@ export default function MainView({ user }) {
         time,
       },
     };
-    dispatch(addEventOperation(event));
+    dispatch(eventOperations.addEventOperation(event));
     setModalShow(false);
   };
 
@@ -107,7 +102,7 @@ export default function MainView({ user }) {
       );
       if (result) {
         const eventId = event.target.getAttribute('data-id');
-        dispatch(deleteEventOperation(eventId));
+        dispatch(eventOperations.deleteEventOperation(eventId));
         deleteEl.parentNode.innerHTML = '';
       }
     }

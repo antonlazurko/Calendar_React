@@ -1,16 +1,15 @@
 import { lazy, Suspense } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import { ToastContainer } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import Container from './components/container/container';
+import { Container } from './components/';
 
-import { useSelector } from 'react-redux';
-
-import { getAuthorizationData } from './redux/selectors/selectors';
+import { selectors } from './redux/selectors/';
 
 // lazy import
 const MainView = lazy(() => import('./views/main/main-view'));
@@ -18,7 +17,7 @@ const AuthView = lazy(() => import('./views/auth/auth-view'));
 const NotFoundView = lazy(() => import('./views/NotFoundView/NotFoundView'));
 
 function App() {
-  const { authorization, member } = useSelector(getAuthorizationData);
+  const { authorization, member } = useSelector(selectors.getAuthorizationData);
 
   return (
     <Suspense fallback={<div>Downloading...</div>}>

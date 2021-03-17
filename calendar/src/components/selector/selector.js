@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
 import { Form } from 'react-bootstrap';
 
-export default function Selector({
+export const Selector = ({
   chooseAll,
   multiple,
   onChange,
   selectArray,
   selectorName,
-}) {
+}) => {
   const getSelectedMembers = target => {
     if (target.multiple) {
       const values = [];
@@ -50,7 +50,7 @@ export default function Selector({
       </Form>
     </>
   );
-}
+};
 Selector.propTypes = {
   multiple: PropTypes.bool,
   onChange: PropTypes.func,

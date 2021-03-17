@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import styles from './navigation.module.css';
 
-const Navigation = () => (
+export const Navigation = () => (
   <nav>
     <NavLink
       exact
@@ -21,5 +21,3 @@ const Navigation = () => (
     </NavLink>
   </nav>
 );
-
-export default Navigation;

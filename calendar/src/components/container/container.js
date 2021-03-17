@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
-import Navigation from '../navigation/Navigation';
+import { Navigation } from '../';
 import styles from './container.module.css';
-import { getIsLoading } from '../../redux/selectors/selectors';
+import { selectors } from '../../redux/';
 
-export default function Container({ children }) {
-  const loading = useSelector(getIsLoading);
+export const Container = ({ children }) => {
+  const loading = useSelector(selectors.getIsLoading);
   return (
     <div className={styles.container}>
       {loading && <div>Downloading...</div>}
@@ -14,7 +14,7 @@ export default function Container({ children }) {
       {children}
     </div>
   );
-}
+};
 Container.propTypes = {
   children: PropTypes.node,
 };

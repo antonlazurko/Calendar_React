@@ -2,14 +2,14 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { FormControl, InputGroup, Button, Modal } from 'react-bootstrap';
 
-import Selector from '../../components/selector/selector';
+import { Selector } from '../../components/';
 
-export default function CreateEventView({
+export const CreateEventView = ({
   handleClose,
   modalShow,
   controlOptions,
   handleSubmit,
-}) {
+}) => {
   const { participants, daysArray, timeArray } = controlOptions;
   const [eventName, setEventName] = useState('');
   const [participantName, setParticipantName] = useState();
@@ -68,7 +68,7 @@ export default function CreateEventView({
       </Modal>
     </>
   );
-}
+};
 CreateEventView.propTypes = {
   handleClose: PropTypes.func,
   modalShow: PropTypes.bool,
