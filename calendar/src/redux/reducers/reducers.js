@@ -29,56 +29,60 @@ export const authReducer = (state = defaulAuthtState, { type, payload }) => {
   }
 };
 
-const initialEventState = { status: null, events: [], error: null };
+const initialEventState = {
+  status: null,
+  events: [],
+  error: null,
+  isLoading: false,
+};
 export const eventReducer = (state = initialEventState, { type, payload }) => {
   switch (type) {
+    case GET_PENDING:
+      return {
+        ...state,
+        isLoading: true,
+      };
     case GET_SUCCESS:
       return {
         ...state,
         events: payload.events || [],
         status: payload.status,
+        isLoading: false,
       };
     case GET_ERROR:
-      return { ...state, error: payload.message };
+      return { ...state, isLoading: false, error: payload.message };
+    case POST_PENDING:
+      return {
+        ...state,
+        isLoading: true,
+      };
     case POST_SUCCESS:
       return {
         ...state,
         events: [...state.events, payload.event],
         status: payload.status,
+        isLoading: false,
       };
     case POST_ERROR:
-      return { ...state, error: payload.message };
+      return { ...state, isLoading: false, error: payload.message };
+    case DELETE_PENDING:
+      return {
+        ...state,
+        isLoading: true,
+      };
     case DELETE_SUCCESS:
       return {
         ...state,
         events: state.events.filter(event => event.id !== payload),
+        isLoading: false,
       };
     case DELETE_ERROR:
-      return { ...state, status: payload.status, error: payload.message };
-    default:
-      return state;
-  }
-};
-export const loadingReducer = (state = false, { type, _ }) => {
-  switch (type) {
-    case GET_PENDING:
-      return true;
-    case GET_SUCCESS:
-      return false;
-    case GET_ERROR:
-      return false;
-    case POST_PENDING:
-      return true;
-    case POST_SUCCESS:
-      return false;
-    case POST_ERROR:
-      return false;
-    case DELETE_PENDING:
-      return true;
-    case DELETE_SUCCESS:
-      return false;
-    case DELETE_ERROR:
-      return false;
+      return {
+        ...state,
+        status: payload.status,
+        isLoading: false,
+        error: payload.message,
+      };
     default:
       return state;
   }
@@ -86,5 +90,4 @@ export const loadingReducer = (state = false, { type, _ }) => {
 export const rootReducer = combineReducers({
   authorization: authReducer,
   events: eventReducer,
-  isLoading: loadingReducer,
 });

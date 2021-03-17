@@ -8,7 +8,6 @@ import { toast } from 'react-toastify';
 import { participants } from '../../data/calendar-data';
 import Selector from '../../components/selector/selector';
 import { authorizeAction } from '../../redux/actions/actions';
-import { getEventOperation } from '../../redux/event-operations/event-operations';
 
 export default function AuthView() {
   const [participantId, setParticipantId] = useState(0);
@@ -28,9 +27,6 @@ export default function AuthView() {
 
     // setting current authorized user to state
     dispatch(authorizeAction(participantObj));
-
-    // setting events user to state
-    dispatch(getEventOperation());
 
     //redirecting to Main View
     history.push('/');

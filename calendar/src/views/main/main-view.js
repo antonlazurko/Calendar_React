@@ -12,6 +12,7 @@ import { getEventsData } from '../../redux/selectors/selectors';
 import {
   deleteEventOperation,
   addEventOperation,
+  getEventOperation,
 } from '../../redux/event-operations/event-operations';
 import styles from './MainView.module.css';
 
@@ -22,6 +23,9 @@ export default function MainView({ user }) {
   const [eventsByParticipant, setEventsByParticipant] = useState([]);
   const [selectedParticipant, setSelectedParticipant] = useState('');
   const [modalShow, setModalShow] = useState(false);
+
+  // setting events user to state
+  useEffect(() => dispatch(getEventOperation()), [dispatch]);
 
   // open modal fn
   const handleModalShow = () => setModalShow(true);
