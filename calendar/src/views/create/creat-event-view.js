@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { FormControl, InputGroup, Button, Modal } from 'react-bootstrap';
 
-import { Selector } from '../../components/';
+import { Selector } from 'components/';
 
 export const CreateEventView = ({
   handleClose,

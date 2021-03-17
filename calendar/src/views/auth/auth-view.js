@@ -5,9 +5,9 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 
-import { participants } from '../../data/calendar-data';
-import { Selector } from '../../components/';
-import { eventActions } from '../../redux/';
+import { participants } from 'data/calendar-data';
+import { Selector } from 'components/';
+import { eventActions } from 'redux/index';
 
 export default function AuthView() {
   const [participantId, setParticipantId] = useState(0);

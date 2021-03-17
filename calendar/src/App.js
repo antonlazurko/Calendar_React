@@ -7,14 +7,16 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import { Container } from './components/';
+import { Container } from 'components/';
 
-import { selectors } from './redux/selectors/';
-
+import { selectors } from 'redux/selectors/';
+// import MainView from './views/main/main-view';
+// import AuthView from './views/auth/auth-view';
+// import NotFoundView from './views/NotFoundView/NotFoundView';
 // lazy import
-const MainView = lazy(() => import('./views/main/main-view'));
-const AuthView = lazy(() => import('./views/auth/auth-view'));
-const NotFoundView = lazy(() => import('./views/NotFoundView/NotFoundView'));
+const MainView = lazy(() => import('views/main/main-view'));
+const AuthView = lazy(() => import('views/auth/auth-view'));
+const NotFoundView = lazy(() => import('views/NotFoundView/NotFoundView'));
 
 function App() {
   const { authorization, member } = useSelector(selectors.getAuthorizationData);
@@ -27,11 +29,11 @@ function App() {
             {authorization ? (
               <MainView user={member} />
             ) : (
-              <Redirect to="/authorisation" />
+              <Redirect to="/authorization" />
             )}
           </Route>
 
-          <Route path="/authorisation">
+          <Route path="/authorization">
             <AuthView />
           </Route>
           <Route>

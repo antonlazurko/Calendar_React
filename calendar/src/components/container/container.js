@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
-import { Navigation } from '../';
+import { Navigation } from 'components';
 import styles from './container.module.css';
-import { selectors } from '../../redux/';
+import { selectors } from 'redux/index';
 
 export const Container = ({ children }) => {
   const loading = useSelector(selectors.getIsLoading);

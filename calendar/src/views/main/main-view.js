@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { toast } from 'react-toastify';
-import { Selector } from '../../components/';
-import { CreateEventView } from '../create/';
-import { participants, daysArray, timeArray } from '../../data/calendar-data';
+import { Selector } from 'components/';
+import { CreateEventView } from 'views/create/';
+import { participants, daysArray, timeArray } from 'data/calendar-data';
 
-import { selectors, eventOperations } from '../../redux/';
+import { selectors, eventOperations } from 'redux/index';
 import styles from './MainView.module.css';
 
 export default function MainView({ user }) {

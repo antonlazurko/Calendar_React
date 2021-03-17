@@ -13,7 +13,7 @@ export const Navigation = () => (
     </NavLink>
 
     <NavLink
-      to="/authorisation"
+      to="/authorization"
       className={styles.link}
       activeClassName={styles.activeLink}
     >
