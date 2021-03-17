@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { Form } from 'react-bootstrap';
 
 export default function Selector({
+  chooseAll,
   multiple,
   onChange,
   selectArray,
@@ -35,6 +36,11 @@ export default function Selector({
             custom
             onChange={e => getSelectedMembers(e.target)}
           >
+            {chooseAll && (
+              <option selected value="0">
+                All users
+              </option>
+            )}
             {selectArray?.map(item => (
               <option
                 key={item.user?.id || item.id}

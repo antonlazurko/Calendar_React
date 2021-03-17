@@ -14,11 +14,11 @@ import {
   DELETE_SUCCESS,
 } from '../action-types/action-types';
 
-const defaultState = {
+const defaulAuthtState = {
   authorization: false,
   member: {},
 };
-export const authReducer = (state = defaultState, { type, payload }) => {
+export const authReducer = (state = defaulAuthtState, { type, payload }) => {
   switch (type) {
     case AUTHORIZE:
       return { authorization: true, member: payload };
@@ -28,45 +28,57 @@ export const authReducer = (state = defaultState, { type, payload }) => {
       return state;
   }
 };
-const initialState = { status: null, data: [], error: null, pending: false };
-export const eventReducer = (state = initialState, { type, payload }) => {
-  switch (type) {
-    case GET_PENDING:
-      return { ...state, pending: true };
 
-    // eslint-disable-next-line no-fallthrough
+const initialEventState = { status: null, events: [], error: null };
+export const eventReducer = (state = initialEventState, { type, payload }) => {
+  switch (type) {
     case GET_SUCCESS:
       return {
         ...state,
-        ...payload,
-        pending: false,
+        events: payload.events || [],
+        status: payload.status,
       };
     case GET_ERROR:
-      return { ...state, error: payload.error, pending: false };
-    case POST_PENDING:
-      return { ...state, pending: true };
-
-    // eslint-disable-next-line no-fallthrough
+      return { ...state, error: payload.message };
     case POST_SUCCESS:
       return {
         ...state,
-        ...payload,
-        pending: false,
+        events: [...state.events, payload.event],
+        status: payload.status,
       };
     case POST_ERROR:
-      return { ...state, error: payload.error, pending: false };
-    case DELETE_PENDING:
-      return { ...state, pending: true };
-
-    // eslint-disable-next-line no-fallthrough
+      return { ...state, error: payload.message };
     case DELETE_SUCCESS:
       return {
         ...state,
-        ...payload,
-        pending: false,
+        events: state.events.filter(event => event.id !== payload),
       };
     case DELETE_ERROR:
-      return { ...state, error: payload.error, pending: false };
+      return { ...state, status: payload.status, error: payload.message };
+    default:
+      return state;
+  }
+};
+export const loadingReducer = (state = false, { type, _ }) => {
+  switch (type) {
+    case GET_PENDING:
+      return true;
+    case GET_SUCCESS:
+      return false;
+    case GET_ERROR:
+      return false;
+    case POST_PENDING:
+      return true;
+    case POST_SUCCESS:
+      return false;
+    case POST_ERROR:
+      return false;
+    case DELETE_PENDING:
+      return true;
+    case DELETE_SUCCESS:
+      return false;
+    case DELETE_ERROR:
+      return false;
     default:
       return state;
   }
@@ -74,4 +86,5 @@ export const eventReducer = (state = initialState, { type, payload }) => {
 export const rootReducer = combineReducers({
   authorization: authReducer,
   events: eventReducer,
+  isLoading: loadingReducer,
 });

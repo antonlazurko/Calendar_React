@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FormControl, InputGroup, Button, Modal } from 'react-bootstrap';
 
 import Selector from '../../components/selector/selector';
@@ -15,9 +15,6 @@ export default function CreateEventView({
   const [participantName, setParticipantName] = useState();
   const [day, setDay] = useState('');
   const [time, setTime] = useState('');
-  useEffect(() => {
-    console.log(participantName);
-  }, [participantName]);
   return (
     <>
       <Modal show={modalShow} onHide={handleClose} animation={false}>
