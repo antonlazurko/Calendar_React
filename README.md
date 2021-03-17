@@ -55,6 +55,8 @@ All data that user input saves on API server. When user refresh aplcation page
 
 - Webpack (module bundler)
 
+- Redax (state management)
+
 - React-Bootstrap (stylization)
 
 - React-Toastify (stylization)
