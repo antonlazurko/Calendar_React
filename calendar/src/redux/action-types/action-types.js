@@ -1,0 +1,11 @@
+export const AUTHORIZE = 'auth/authorize';
+export const UNAUTHORIZE = 'auth/unauthorize';
+export const GET_SUCCESS = 'get/success';
+export const GET_ERROR = 'get/error';
+export const GET_PENDING = 'get/pending';
+export const POST_SUCCESS = 'post/success';
+export const POST_ERROR = 'post/error';
+export const POST_PENDING = 'post/pending';
+export const DELETE_SUCCESS = 'delete/success';
+export const DELETE_ERROR = 'delete/error';
+export const DELETE_PENDING = 'delete/pending';

@@ -1,22 +1,26 @@
 import PropTypes from 'prop-types';
 import { Button, Table } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
-import JSON5 from 'json5';
+import { useSelector, useDispatch } from 'react-redux';
+
 import { toast } from 'react-toastify';
+import { Selector } from 'components/';
+import { CreateEventView } from 'views/create/';
+import { participants, daysArray, timeArray } from 'data/calendar-data';
 
-import Selector from '../../components/selector/selector';
-import CreateEventView from '../create/creat-event-view';
-import { participants, daysArray, timeArray } from '../../data/calendar-data';
-
-import { eventsSingleton } from '../../sevices/API-service';
-
+import { selectors, eventOperations } from 'redux/index';
 import styles from './MainView.module.css';
 
 export default function MainView({ user }) {
-  const [meetings, setMeetings] = useState([]);
-  const [meetingsByParticipant, setMeetingsByParticipant] = useState([]);
+  const { events } = useSelector(selectors.getEventsData);
+  const dispatch = useDispatch();
+
+  const [eventsByParticipant, setEventsByParticipant] = useState([]);
   const [selectedParticipant, setSelectedParticipant] = useState('');
   const [modalShow, setModalShow] = useState(false);
+
+  // setting events user to state
+  useEffect(() => dispatch(eventOperations.getEventOperation()), [dispatch]);
 
   // open modal fn
   const handleModalShow = () => setModalShow(true);
@@ -51,9 +55,8 @@ export default function MainView({ user }) {
       return false;
     }
 
-    const isAvailableTime = meetings.filter(
-      meeting =>
-        meeting.data.info.day === day && meeting.data.info.time === time,
+    const isAvailableTime = events.filter(
+      event => event.data.info.day === day && event.data.info.time === time,
     );
     if (isAvailableTime.length) {
       toast.error('Please choose other time or date!', {
@@ -66,10 +69,10 @@ export default function MainView({ user }) {
 
   // submit form
   const handleSubmit = async (participantName, eventName, day, time) => {
-    if (!(await validateForm(participantName, eventName, day, time))) {
+    if (!validateForm(participantName, eventName, day, time)) {
       return;
     }
-    const meeting = {
+    const event = {
       title: `'${eventName}'`,
       participants: participantName,
       info: {
@@ -77,26 +80,7 @@ export default function MainView({ user }) {
         time,
       },
     };
-
-    const stringifyMeeting = JSON.stringify(meeting).replace(/"/g, '');
-    await eventsSingleton
-      .addEvent(
-        `{
-    "data":"${stringifyMeeting}"
-  }`,
-      )
-      .then(({ data, status }) => {
-        if (status === 200) {
-          toast.success('Event succesfully added!', {
-            position: toast.POSITION.TOP_CENTER,
-          });
-          const parsedMeeting = {
-            id: data.id,
-            data: JSON5.parse(data.data),
-          };
-          setMeetings(prevMeetings => [...prevMeetings, parsedMeeting]);
-        }
-      });
+    dispatch(eventOperations.addEventOperation(event));
     setModalShow(false);
   };
 
@@ -110,65 +94,36 @@ export default function MainView({ user }) {
   };
 
   // deleting event on delete button click
-  const deleteEvent = async event => {
+  const deleteEvent = event => {
     const deleteEl = event.target;
     if (deleteEl.tagName === 'BUTTON') {
       const result = window.confirm(
         `Are you shure you want to delete "${deleteEl.parentNode.textContent}" event?`,
       );
       if (result) {
-        const meetingId = event.target.getAttribute('data-id');
-
-        await eventsSingleton.deleteEvent(meetingId).then(status => {
-          if (status === 204) {
-            toast.success('Event succesfully deleted!', {
-              position: toast.POSITION.TOP_CENTER,
-            });
-            deleteEl.parentNode.innerHTML = '';
-          }
-        });
+        const eventId = event.target.getAttribute('data-id');
+        dispatch(eventOperations.deleteEventOperation(eventId));
+        deleteEl.parentNode.innerHTML = '';
       }
     }
   };
 
-  // fetching meeting at first render
-  useEffect(() => {
-    async function fetchData() {
-      const { data, status } = await eventsSingleton.getEvent();
-      if (data) {
-        const parsedMeetings = data?.map(event => ({
-          id: event.id,
-          data: JSON5.parse(event.data),
-        }));
-        setMeetings(parsedMeetings);
-        toast.success(`Events succesfully get with status: ${status}!`, {
-          position: toast.POSITION.TOP_CENTER,
-        });
-        return;
-      }
-      toast.success('There are no events in your calendar yet!', {
-        position: toast.POSITION.TOP_CENTER,
-      });
-      setMeetings([]);
-    }
-    fetchData();
-  }, []);
-
   // filter events by selected participant
   useEffect(() => {
     selectedParticipant
-      ? setMeetingsByParticipant(
-          meetings.filter(meeting => {
-            return meeting.data.participants.includes(selectedParticipant);
+      ? setEventsByParticipant(
+          events.filter(event => {
+            return event.data.participants.includes(selectedParticipant);
           }),
         )
-      : setMeetingsByParticipant(meetings);
-  }, [selectedParticipant, meetings]);
+      : setEventsByParticipant(events);
+  }, [selectedParticipant, events]);
 
   return (
     <>
       <div className={styles.header}>
         <Selector
+          chooseAll={true}
           selectArray={participants}
           onChange={getParticipant}
           multiple={false}
@@ -193,15 +148,15 @@ export default function MainView({ user }) {
         </thead>
         <tbody>
           {timeArray.map((timeObj, index) => {
-            const availableMeetings = meetingsByParticipant?.filter(
-              meeting => meeting.data.info.time === index,
+            const availablEevents = eventsByParticipant?.filter(
+              event => event.data.info.time === index,
             );
             const days = new Array(5).fill('');
-            availableMeetings?.map(meeting => {
-              const { day } = meeting.data.info;
+            availablEevents?.map(event => {
+              const { day } = event.data.info;
               days[day] = {
-                name: `${meeting.data.title}`,
-                id: meeting.id,
+                name: `${event.data.title}`,
+                id: event.id,
                 className: 'succes',
               };
               return true;

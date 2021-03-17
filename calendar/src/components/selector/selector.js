@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
 import { Form } from 'react-bootstrap';
-import { propTypes } from 'react-bootstrap/esm/Image';
 
-export default function Selector({
+export const Selector = ({
+  chooseAll,
   multiple,
   onChange,
   selectArray,
   selectorName,
-}) {
+}) => {
   const getSelectedMembers = target => {
     if (target.multiple) {
       const values = [];
@@ -36,6 +36,7 @@ export default function Selector({
             custom
             onChange={e => getSelectedMembers(e.target)}
           >
+            {chooseAll && <option defaultValue="0">All users</option>}
             {selectArray?.map(item => (
               <option
                 key={item.user?.id || item.id}
@@ -49,10 +50,10 @@ export default function Selector({
       </Form>
     </>
   );
-}
+};
 Selector.propTypes = {
-  multiple: propTypes.bool,
+  multiple: PropTypes.bool,
   onChange: PropTypes.func,
   selectArray: PropTypes.arrayOf(PropTypes.object),
-  selectorName: propTypes.string,
+  selectorName: PropTypes.string,
 };

@@ -1,11 +1,11 @@
 import { NavLink } from 'react-router-dom';
 import styles from './navigation.module.css';
 
-const Navigation = () => (
+export const Navigation = () => (
   <nav>
     <NavLink
       exact
-      to="/"
+      to="/Calendar_React/"
       className={styles.link}
       activeClassName={styles.activeLink}
     >
@@ -13,7 +13,7 @@ const Navigation = () => (
     </NavLink>
 
     <NavLink
-      to="/authorisation"
+      to="/Calendar_React/authorization"
       className={styles.link}
       activeClassName={styles.activeLink}
     >
@@ -21,5 +21,3 @@ const Navigation = () => (
     </NavLink>
   </nav>
 );
-
-export default Navigation;
