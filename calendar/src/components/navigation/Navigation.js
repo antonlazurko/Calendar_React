@@ -5,7 +5,7 @@ export const Navigation = () => (
   <nav>
     <NavLink
       exact
-      to="/"
+      to="/Calendar_React/"
       className={styles.link}
       activeClassName={styles.activeLink}
     >
@@ -13,7 +13,7 @@ export const Navigation = () => (
     </NavLink>
 
     <NavLink
-      to="/authorization"
+      to="/Calendar_React/authorization"
       className={styles.link}
       activeClassName={styles.activeLink}
     >

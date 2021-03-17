@@ -10,9 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container } from 'components/';
 
 import { selectors } from 'redux/selectors/';
-// import MainView from './views/main/main-view';
-// import AuthView from './views/auth/auth-view';
-// import NotFoundView from './views/NotFoundView/NotFoundView';
+
 // lazy import
 const MainView = lazy(() => import('views/main/main-view'));
 const AuthView = lazy(() => import('views/auth/auth-view'));
@@ -25,15 +23,15 @@ function App() {
     <Suspense fallback={<div>Downloading...</div>}>
       <Container>
         <Switch>
-          <Route path="/" exact>
+          <Route path="/Calendar_React/" exact>
             {authorization ? (
               <MainView user={member} />
             ) : (
-              <Redirect to="/authorization" />
+              <Redirect to="/Calendar_React/authorization" />
             )}
           </Route>
 
-          <Route path="/authorization">
+          <Route path="/Calendar_React/authorization">
             <AuthView />
           </Route>
           <Route>

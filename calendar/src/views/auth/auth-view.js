@@ -29,7 +29,7 @@ export default function AuthView() {
     dispatch(eventActions.authorizeAction(participantObj));
 
     //redirecting to Main View
-    history.push('/');
+    history.push('/Calendar_React/');
   };
 
   return (
